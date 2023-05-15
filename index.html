@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <title>Samochody</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 3px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #info {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            margin-top: 20px;
+        }
+
+        .car-list {
+            margin-top: 20px;
+        }
+
+        .car-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .car-item:last-child {
+            border-bottom: none;
+        }
+
+        .car-item:hover {
+            background-color: #f2f2f2;
+        }
+
+        .car-item .car-name {
+            flex: 1;
+        }
+
+        .close-icon {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Samochody</h1>
+
+        <button onclick="auto.start()">Uruchom</button>
+        <button onclick="auto.stop()">Zatrzymaj</button>
+        <button onclick="auto.info()">Informacje</button>
+
+        <div id="info"></div>
+
+        <h2>Lista dostępnych samochodów:</h2>
+        <div class="car-list">
+            <div class="car-item" onclick="showCarInfo(1)">
+                <span class="car-name">Ford Mustang</span>
+                <span class="close-icon" onclick="removeCar(1)">x</span>
+            </div>
+            <div class="car-item" onclick="showCarInfo(2)">
+                <span class="car-name">BMW X5</span>
+                <span class="close-icon" onclick="removeCar(2)">x</span>
+            </div>
+            <div class="car-item" onclick="showCarInfo(3)">
+                <span class="car-name">Mercedes-Benz C-Class</span>
+                <span class="close-icon" onclick="removeCar(3)">x</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+     const div = document.getElementById("info");
+const carList = document.querySelector(".car-list");
+let carIdCounter = 3;
+
+const auto = {
+  cars: [
+    {
+      id: 1,
+      marka: "Ford",
+      model: "Mustang",
+      rok: 2022,
+      kolor: "czerwony",
+      przebieg: 2500,
+      uruchomiony: false,
+    },
+    {
+      id: 2,
+      marka: "BMW",
+      model: "X5",
+      rok: 2019,
+      kolor: "czarny",
+      przebieg: 4123,
+      uruchomiony: false,
+    },
+    {
+      id: 3,
+      marka: "Mercedes-Benz",
+      model: "C-Class",
+      rok: 2020,
+      kolor: "srebrny",
+      przebieg: 1800,
+      uruchomiony: false,
+    },
+  ],
+  start: function () {
+    if (this.uruchomiony) {
+      alert("Samochód już został uruchomiony. 🚗");
+    } else {
+      alert("Samochód został uruchomiony. 🚗");
+      this.uruchomiony = true;
+    }
+  },
+  stop: function () {
+    if (this.uruchomiony) {
+      alert("Samochód został zatrzymany. 👍");
+      this.uruchomiony = false;
+    } else {
+      alert("Samochód nie został uruchomiony. 🚫");
+    }
+  },
+  info: function () {
+    div.innerHTML = `<p><strong>Marka:</strong> ${this.marka}</p> <p><strong>Model:</strong> ${this.model}</p> <p><strong>Rok:</strong> ${this.rok}</p> <p><strong>Kolor:</strong> ${this.kolor}</p> <p><strong>Przebieg:</strong> ${this.przebieg}</p>`;
+  },
+};
+function showCarInfo(id) {
+  const car = auto.cars.find((car) => car.id === id);
+  if (car) {
+    div.innerHTML = `<p><strong>Marka:</strong> ${car.marka}</p>
+                             <p><strong>Model:</strong> ${car.model}</p>
+                             <p><strong>Rok:</strong> ${car.rok}</p>
+                             <p><strong>Kolor:</strong> ${car.kolor}</p>
+                             <p><strong>Przebieg:</strong> ${car.przebieg}</p>`;
+  }
+}
+
+function removeCar(id) {
+  const index = auto.cars.findIndex((car) => car.id === id);
+  if (index !== -1) {
+    auto.cars.splice(index, 1);
+    const carItem = document.querySelector(`.car-item[data-id="${id}"]`);
+    if (carItem) {
+      carItem.remove();
+    }
+    div.innerHTML = "";
+  }
+}
+
+function addCar(marka, model, rok, kolor, przebieg) {
+  const id = ++carIdCounter;
+  const newCar = {
+    id: id,
+    marka: marka,
+    model: model,
+    rok: rok,
+    kolor: kolor,
+    przebieg: przebieg,
+    uruchomiony: false,
+  };
+  auto.cars.push(newCar);
+
+  const carItem = document.createElement("div");
+  carItem.classList.add("car-item");
+  carItem.setAttribute("data-id", id);
+  carItem.appendChild(carItem);
+  carItem.innerHTML = `<span class="car-name">${marka} ${model}</span>
+                             <span class="close-icon" onclick="removeCar(${id})">x</span>`;
+
+  carItem.addEventListener("click", function () {
+    showCarInfo(id);
+  });
+
+  carList.appendChild(carItem);
+}
+
+</script>
+</body>
+</html>
+
